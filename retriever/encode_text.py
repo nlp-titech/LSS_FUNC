@@ -118,15 +118,12 @@ def main():
         pid = entry["_id"]
         passage = entry["title"] + " " + entry["text"]
         all_pids.append(pid)
-        t_passage = model.q_tokenizer(passage)["input_ids"]
-        if not model_args.no_sep:
-            # we record sep for models that use it
-            t_passage = t_passage + [tokenizer.sep_token_id]
+        t_passage = model.q_tokenizer(passage, max_length=data_args.p_max_len)["input_ids"][1:-1]
         rep_dict = defaultdict(list)
         for sent_pos, tok_id in enumerate(t_passage):
             if tok_id in model.remove_tok:
                 continue
-            rep_dict[tok_id].append(all_reps[pos][sent_pos + 1])  # skip cls
+            rep_dict[tok_id].append(all_reps[pos][sent_pos])  # skip cls
         for tok_id, tok_rep in rep_dict.items():
             if tok_id in model.remove_tok:
                 continue

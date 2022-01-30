@@ -15,7 +15,8 @@ from .arguments import ModelArguments
 
 
 logger = logging.getLogger(__name__)
-LOCAL_AVE_POOLER = ""
+TOKEN_POOLER = "token"
+LOCAL_AVE_POOLER = "ave"
 
 
 class Coil:
@@ -80,10 +81,7 @@ class COIL_Core(nn.Module):
         self.cls_proj = nn.Linear(768, model_args.cls_dim)
         self.model_args = model_args
         self.pooler_mode = model_args.pooler_mode
-        if self.pooler_mode == LOCAL_AVE_POOLER:
-            self.ave_pool = nn.AvgPool1d(
-                self.window_size, stride=1, padding=self.window_size // 2, count_include_pad=False
-            )
+        self.window_size = model_args.window_size
 
         if model_args.token_norm_after:
             self.ln_tok = nn.LayerNorm(model_args.token_dim)
@@ -136,11 +134,27 @@ class COIL_Core(nn.Module):
         return cls_rep, reps
 
     def _preproc_rep(self, reps: Tensor, features: Dict[str, Tensor]):
-        att_masks = features["attention_mask"]
-        reps *= att_masks.unsqueeze(-1)
-        if self.pooler_mode == LOCAL_AVE_POOLER:
-            reps = self.ave_pool(reps.transpose(1, 2)).transpose(1, 2)
+        att_masks = features["attention_mask"][:, 1:-1]
+        reps = reps[:, 1:-1]
+        if self.pooler_mode == TOKEN_POOLER:
+            pass
+        elif self.pooler_mode == LOCAL_AVE_POOLER:
+            reps = self._rep_lave(reps, att_masks)
+        else:
+            raise ValueError(f"{self.pooler} doesn't exist")
 
         reps /= torch.norm(reps, dim=2).unsqueeze(-1)
         reps[torch.isnan(reps)] = 0.0
         return reps
+
+    def _rep_lave(self, reps, att_masks):
+        tg_reps = torch.zeros_like(reps)
+        for b, (rep, att_mask) in enumerate(zip(reps, att_masks)):
+            og_rep = rep[att_mask == 1, :]
+            rep_len = og_rep.shape[0]
+            for i in range(rep_len):
+                start = i - self.window_size if i - self.window_size > 0 else 0
+                end = i + self.window_size
+                tg_reps[b, i, :] += torch.mean(og_rep[start:end, :], dim=0)
+
+        return tg_reps
