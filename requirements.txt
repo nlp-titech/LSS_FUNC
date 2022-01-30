@@ -6,7 +6,7 @@ async-timeout==4.0.2
 attrs==21.4.0
 backcall==0.2.0
 beautifulsoup4==4.10.0
-beir=0.2.3
+beir==0.2.3
 black==21.9b0
 cachetools==4.2.4
 cbor==1.0.0
