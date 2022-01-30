@@ -1,6 +1,5 @@
 #!/bin/bash
 
-<<<<<<< HEAD
 #$ -l rt_G.small=1
 #$ -l h_rt=3:00:00
 #$ -j y
