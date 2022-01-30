@@ -115,8 +115,7 @@ def main():
     tok_pid_dict = defaultdict(list)
 
     for pos, entry in enumerate(tqdm(encode_dataset.nlp_dataset)):
-        pid_str = entry["_id"]
-        pid = int(pid_str)
+        pid = entry["_id"]
         passage = entry["title"] + " " + entry["text"]
         all_pids.append(pid)
         t_passage = model.q_tokenizer(passage)["input_ids"]
