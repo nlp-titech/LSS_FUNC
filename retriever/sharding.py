@@ -3,6 +3,7 @@ import os
 import pickle
 import numpy as np
 import torch
+from tqdm import tqdm
 
 
 def pickle_file(file: str):
@@ -127,7 +128,7 @@ def main():
     all_ivl_scatter_maps = {}
     all_shard_scatter_maps = {}
 
-    for tok_id, tok_map in tok_ids_2_ex_id.items():
+    for tok_id, tok_map in tqdm(tok_ids_2_ex_id.items()):
         shard_scatter_map, ivl_scatter_map = build_scatter_map(tok_map, ex_id_to_sid)
 
         if args.use_torch:
