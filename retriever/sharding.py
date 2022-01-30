@@ -76,7 +76,7 @@ def main():
     # build cls shard first
     cls_reps = None
     cls_ids = None
-    for sp in splits_in_shard:
+    for sp in tqdm(splits_in_shard):
         # split_cls_reps, split_cls_ids = load_cls_one_split(sp)
         split_cls_ids = load_cls_one_split(sp)
         if cls_reps is None:
@@ -101,7 +101,7 @@ def main():
 
     tok_id_2_rep = {}
     tok_ids_2_ex_id = {}
-    for sp in splits_in_shard:
+    for sp in tqdm(splits_in_shard):
         split_offset, split_reps, split_pids = load_ivl_one_split(sp)
         for tok_id in split_offset:
             off, ivl_size = split_offset[tok_id]
