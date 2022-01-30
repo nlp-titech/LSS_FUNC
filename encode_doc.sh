@@ -1,5 +1,6 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 #$ -l rt_G.small=1
 #$ -l h_rt=3:00:00
 #$ -j y
@@ -29,7 +30,7 @@ python retriever/encode_text.py \
   --token_dim 32 \
   --no_sep \
   --p_max_len 512 \
-  --pooling_mode ave \
+  --pooler_mode ave \
   --window_size 5 \
   --fp16 \
   --per_device_eval_batch_size 128 \
