@@ -120,7 +120,7 @@ def main():
     if args.use_torch:
         torch.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt"))
     else:
-        np.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt")
+        np.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt"))
 
     del tok_id_2_rep
 
@@ -138,7 +138,9 @@ def main():
         all_shard_scatter_maps[tok_id] = shard_scatter_map
 
     if args.use_torch:
-        torch.save(all_ivl_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "ivl_scatter_maps.pt"))
+        torch.save(
+            all_ivl_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "ivl_scatter_maps.pt")
+        )
         torch.save(
             all_shard_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "shard_scatter_maps.pt")
         )
@@ -147,6 +149,7 @@ def main():
         np.save(
             all_shard_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "shard_scatter_maps.pt")
         )
+
 
 if __name__ == "__main__":
     main()
