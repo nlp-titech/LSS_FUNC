@@ -20,9 +20,6 @@ import os
 import sys
 import pickle
 from collections import defaultdict
-from dataclasses import dataclass
-from typing import Dict, List, Union, Tuple
-from torch._C import Value
 from tqdm import tqdm
 
 import numpy as np
@@ -31,14 +28,12 @@ import torch
 from lss_func.arguments import ModelArguments, DataArguments, COILTrainingArguments as TrainingArguments
 from lss_func.beir_datasets import BeirDataset
 from lss_func.coil import Coil
-from transformers import AutoConfig, AutoTokenizer
 from transformers import DataCollatorWithPadding
 from transformers import (
     HfArgumentParser,
     set_seed,
 )
 
-from trainer import COILTrainer as Trainer
 
 logger = logging.getLogger(__name__)
 
