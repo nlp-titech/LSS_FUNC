@@ -6,7 +6,7 @@ async-timeout==4.0.2
 attrs==21.4.0
 backcall==0.2.0
 beautifulsoup4==4.10.0
--e git+https://github.com/UKPLab/beir.git@400d92fb450ec7fe0e2d7c2342d83a1a7472ffaa#egg=beir
+beir=0.2.3
 black==21.9b0
 cachetools==4.2.4
 cbor==1.0.0
@@ -39,7 +39,6 @@ jedi==0.18.0
 joblib==1.1.0
 keras==2.6.0
 Keras-Preprocessing==1.1.2
--e git+ssh://git@github.com/nlp-titech/LSS_FUNC.git@d32df74c710ad14f2678dfa95fdea327bf22a642#egg=LSS_FUNC
 lxml==4.7.1
 lz4==3.1.10
 Markdown==3.3.4
