@@ -117,7 +117,11 @@ def main():
         for tok_id in tok_id_2_rep:
             tok_id_2_rep[tok_id] = torch.tensor(tok_id_2_rep[tok_id])
 
-    torch.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt"))
+    if args.use_torch:
+        torch.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt"))
+    else:
+        np.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt")
+
     del tok_id_2_rep
 
     all_ivl_scatter_maps = {}
@@ -133,11 +137,16 @@ def main():
         all_ivl_scatter_maps[tok_id] = ivl_scatter_map
         all_shard_scatter_maps[tok_id] = shard_scatter_map
 
-    torch.save(all_ivl_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "ivl_scatter_maps.pt"))
-    torch.save(
-        all_shard_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "shard_scatter_maps.pt")
-    )
-
+    if args.use_torch:
+        torch.save(all_ivl_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "ivl_scatter_maps.pt"))
+        torch.save(
+            all_shard_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "shard_scatter_maps.pt")
+        )
+    else:
+        np.save(all_ivl_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "ivl_scatter_maps.pt"))
+        np.save(
+            all_shard_scatter_maps, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "shard_scatter_maps.pt")
+        )
 
 if __name__ == "__main__":
     main()
