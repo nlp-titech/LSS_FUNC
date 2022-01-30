@@ -30,9 +30,6 @@ class ModelArguments:
     token_norm_after: bool = field(default=False)
     cls_norm_after: bool = field(default=False)
     x_device_negatives: bool = field(default=False)
-    no_sep: bool = field(
-        default=False,
-    )
     no_cls: bool = field(
         default=False,
     )
