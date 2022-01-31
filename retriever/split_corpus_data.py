@@ -18,7 +18,10 @@ def main(args):
             corpus.append(line.strip())
 
     all_num = len(corpus)
-    chunk_len = all_num // split_num
+    if all_num % split_num:
+        chunk_len = all_num // (split_num - 1)
+    else:
+        chunk_len = all_num // split_num
     for i_chunk, chunk_start in enumerate(range(0, all_num, chunk_len)):
         chunk_end = chunk_start + chunk_len - 1
         corpus_chunk = corpus[chunk_start:chunk_end]
