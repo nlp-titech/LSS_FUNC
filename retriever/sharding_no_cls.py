@@ -119,7 +119,7 @@ def main():
             tok_id_2_rep[tok_id] = torch.tensor(tok_id_2_rep[tok_id])
 
     # if args.use_torch:
-    torch.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt"))
+    torch.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt"), pickle_protocol=4)
     # else:
     #     np.save(tok_id_2_rep, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "tok_reps.pt"))
 
