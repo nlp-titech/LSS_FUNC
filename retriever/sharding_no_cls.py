@@ -74,12 +74,11 @@ def main():
     splits_in_shard = shard_splits(args)
 
     # build cls shard first
-    cls_reps = None
     cls_ids = None
     for sp in tqdm(splits_in_shard):
         # split_cls_reps, split_cls_ids = load_cls_one_split(sp)
         split_cls_ids = load_cls_one_split(sp)
-        if cls_reps is None:
+        if cls_ids is None:
             # cls_reps = split_cls_reps
             cls_ids = split_cls_ids
         else:
