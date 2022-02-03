@@ -31,7 +31,7 @@ class BeirDocDataset(Dataset):
         return encoded_psg
 
 
-class BeirQueryDataset(Dataset):
+class BeirQueryDataset(BeirDocDataset):
     columns = ["_id", "text"]
 
     def __getitem__(self, item) -> [BatchEncoding]:
