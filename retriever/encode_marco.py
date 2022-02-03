@@ -114,9 +114,10 @@ def main():
     tok_rep_dict = defaultdict(list)
     tok_pid_dict = defaultdict(list)
 
+    target_text_fields = ["title", "text"]
     for pos, entry in enumerate(tqdm(encode_dataset.nlp_dataset)):
         pid = int(entry["_id"])
-        passage = entry["title"] + " " + entry["text"]
+        passage = " ".join([entry[field] for field in target_text_fields if field in entry])
         all_pids.append(pid)
         t_passage = model.q_tokenizer(passage, max_length=data_args.p_max_len)["input_ids"][1:-1]
         rep_dict = defaultdict(list)
