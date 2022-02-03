@@ -80,7 +80,7 @@ def main():
         # match_scores = torch.matmul(batch_q_reps, doc_cls_reps.transpose(0, 1))  # D * b
         # if args.no_cls:
         #     match_scores = torch.zeros_like(match_scores)
-        match_scores = np.zeros(batch_size, len(cls_ex_ids))
+        match_scores = np.zeros((batch_size, len(cls_ex_ids)))
 
         batched_qtok_offsets = defaultdict(list)
         q_batch_offsets = defaultdict(list)
