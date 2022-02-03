@@ -46,7 +46,7 @@ def main():
     all_ivl_scatter_maps = torch.load(os.path.join(args.doc_shard, "ivl_scatter_maps.pt"))
     all_shard_scatter_maps = torch.load(os.path.join(args.doc_shard, "shard_scatter_maps.pt"))
     tok_id_2_reps = torch.load(os.path.join(args.doc_shard, "tok_reps.pt"))
-    # doc_cls_reps = torch.load(os.path.join(args.doc_shard, "cls_reps.pt")).float()
+    ## doc_cls_reps = torch.load(os.path.join(args.doc_shard, "cls_reps.pt")).float()
     cls_ex_ids = torch.load(os.path.join(args.doc_shard, "cls_ex_ids.pt"))
     tok_id_2_reps = dict_2_float(tok_id_2_reps)
     if args.weight_dir is not None:
@@ -61,7 +61,7 @@ def main():
 
     query_tok_reps = torch.load(os.path.join(args.query, "tok_reps.pt")).float()
     all_query_offsets = torch.load(os.path.join(args.query, "offsets.pt"))
-    # query_cls_reps = torch.load(os.path.join(args.query, "cls_reps.pt")).float()
+    ## query_cls_reps = torch.load(os.path.join(args.query, "cls_reps.pt")).float()
 
     print("Query representations loaded", flush=True)
 
