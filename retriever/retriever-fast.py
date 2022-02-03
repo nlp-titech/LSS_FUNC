@@ -50,7 +50,7 @@ def main():
     ## doc_cls_reps = torch.load(os.path.join(args.doc_shard, "cls_reps.pt")).float()
     # cls_ex_ids = torch.load(os.path.join(args.doc_shard, "cls_ex_ids.pt"))
     cls_ex_ids = np.load(os.path.join(args.doc_shard, "cls_ex_ids.npy"))
-    tok_id_2_reps = dict_2_float(tok_id_2_reps)
+    # tok_id_2_reps = dict_2_float(tok_id_2_reps)
     if args.weight_dir is not None:
         weight_path = os.path.join(args.weight_dir, "model.pt")
         if os.path.exists(weight_path):
@@ -97,7 +97,7 @@ def main():
             q_tok_reps = query_tok_reps[batched_qtok_offsets[q_tok_id]]
             tok_reps = tok_id_2_reps[q_tok_id]
             # tok_scores = torch.matmul(q_tok_reps, tok_reps.transpose(0, 1)).relu_()  # Bt * Ds
-            tok_scores = np.dot(q_tok_reps, tok_reps.transpose(0,1))
+            tok_scores = np.dot(q_tok_reps, tok_reps.transpose(0, 1))
             if args.weight_dir is not None:
                 tok_scores *= weight[q_tok_id]
             batched_tok_scores.append(tok_scores)
