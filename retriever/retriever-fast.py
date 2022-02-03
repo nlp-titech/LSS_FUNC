@@ -3,6 +3,7 @@ import torch
 import os
 from collections import defaultdict
 from tqdm import tqdm, trange
+import numpy as np
 
 try:
     from retriever_ext import scatter as c_scatter
@@ -47,7 +48,8 @@ def main():
     all_shard_scatter_maps = torch.load(os.path.join(args.doc_shard, "shard_scatter_maps.pt"))
     tok_id_2_reps = torch.load(os.path.join(args.doc_shard, "tok_reps.pt"))
     ## doc_cls_reps = torch.load(os.path.join(args.doc_shard, "cls_reps.pt")).float()
-    cls_ex_ids = torch.load(os.path.join(args.doc_shard, "cls_ex_ids.pt"))
+    # cls_ex_ids = torch.load(os.path.join(args.doc_shard, "cls_ex_ids.pt"))
+    cls_ex_ids = np.load(os.path.join(args.doc_shard, "cls_ex_ids.npy"))
     tok_id_2_reps = dict_2_float(tok_id_2_reps)
     if args.weight_dir is not None:
         weight_path = os.path.join(args.weight_dir, "model.pt")
