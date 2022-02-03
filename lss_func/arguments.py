@@ -69,7 +69,7 @@ class DataArguments:
             "than this will be truncated, sequences shorter will be padded."
         },
     )
-    query: bool = field(default=False, metadata={"help: if encode query, store true"})
+    query: bool = field(default=False, metadata={"help": "if encode query, store true"})
     vocab_weight_path: str = field(default=None, metadata={"help": "Path to vocab weight path"})
 
     def __post_init__(self):
