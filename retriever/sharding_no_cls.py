@@ -85,13 +85,13 @@ def main():
             # cls_reps = np.concatenate((cls_reps, split_cls_reps), axis=0)
             cls_ids = np.concatenate((cls_ids, split_cls_ids), axis=0)
 
-    if args.use_torch:
+    # if args.use_torch:
         # torch.save(torch.tensor(cls_reps), os.path.join(args.save_to, f'shard_{args.shard_id:02d}', 'cls_reps.pt'))
-        torch.save(torch.tensor(cls_ids), os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids.pt"))
+    torch.save(torch.tensor(cls_ids), os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids.pt"))
 
-    else:
+    # else:
         # np.save(os.path.join(args.save_to, f'shard_{args.shard_id:02d}', 'cls_reps'), cls_reps)
-        np.save(os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids"), cls_ids)
+        # np.save(os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids"), cls_ids)
 
     # del cls_reps
 
