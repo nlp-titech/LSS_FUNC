@@ -79,7 +79,7 @@ def main():
         # match_scores = torch.matmul(batch_q_reps, doc_cls_reps.transpose(0, 1))  # D * b
         # if args.no_cls:
         #     match_scores = torch.zeros_like(match_scores)
-        match_scores = torch.zeros(batch_size, len(cls_ex_ids))
+        match_scores = np.zeros(batch_size, len(cls_ex_ids))
 
         batched_qtok_offsets = defaultdict(list)
         q_batch_offsets = defaultdict(list)
@@ -96,7 +96,8 @@ def main():
         for q_tok_id in batch_qtok_ids:
             q_tok_reps = query_tok_reps[batched_qtok_offsets[q_tok_id]]
             tok_reps = tok_id_2_reps[q_tok_id]
-            tok_scores = torch.matmul(q_tok_reps, tok_reps.transpose(0, 1)).relu_()  # Bt * Ds
+            # tok_scores = torch.matmul(q_tok_reps, tok_reps.transpose(0, 1)).relu_()  # Bt * Ds
+            tok_scores = np.dot(q_tok_reps, tok_reps.transpose(0,1))
             if args.weight_dir is not None:
                 tok_scores *= weight[q_tok_id]
             batched_tok_scores.append(tok_scores)
@@ -110,7 +111,8 @@ def main():
 
             for j in range(tok_scores.size(0)):
                 ivl_maxed_scores.zero_()
-                c_scatter.scatter_max(tok_scores[j].numpy(), ivl_scatter_map.numpy(), ivl_maxed_scores.numpy())
+                # c_scatter.scatter_max(tok_scores[j].numpy(), ivl_scatter_map.numpy(), ivl_maxed_scores.numpy())
+                c_scatter.scatter_max(tok_scores[j], ivl_scatter_map, ivl_maxed_scores.numpy())
                 boff = q_batch_offsets[q_tok_id][j]
                 match_scores[boff].scatter_add_(0, shard_scatter_map, ivl_maxed_scores)
 
