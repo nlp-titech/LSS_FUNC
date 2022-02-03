@@ -26,7 +26,7 @@ import numpy as np
 import torch
 
 from lss_func.arguments import ModelArguments, DataArguments, COILTrainingArguments as TrainingArguments
-from lss_func.beir_datasets import BeirDataset
+from lss_func.beir_datasets import BeirDocDataset, BeirQueryDataset
 from lss_func.coil import Coil
 from transformers import DataCollatorWithPadding
 from transformers import (
@@ -90,7 +90,10 @@ def main():
         raise NotImplementedError("Encoding with multi processes is not implemented.")
     from torch.utils.data import DataLoader
 
-    encode_dataset = BeirDataset(data_args.encode_in_path, tokenizer, p_max_len=data_args.p_max_len)
+    if data_args.query:
+        encode_dataset = BeirQueryDataset(data_args.encode_in_path, tokenizer, p_max_len=data_args.p_max_len)
+    else:
+        encode_dataset = BeirDocDataset(data_args.encode_in_path, tokenizer, p_max_len=data_args.p_max_len)
     encode_loader = DataLoader(
         encode_dataset,
         batch_size=training_args.per_device_eval_batch_size,
@@ -114,9 +117,10 @@ def main():
     tok_rep_dict = defaultdict(list)
     tok_pid_dict = defaultdict(list)
 
+    target_text_fields = ["title", "text"]
     for pos, entry in enumerate(tqdm(encode_dataset.nlp_dataset)):
         pid = entry["_id"]
-        passage = entry["title"] + " " + entry["text"]
+        passage = " ".join([entry[field] for field in target_text_fields if field in entry])
         all_pids.append(pid)
         t_passage = model.q_tokenizer(passage, max_length=data_args.p_max_len)["input_ids"][1:-1]
         rep_dict = defaultdict(list)
