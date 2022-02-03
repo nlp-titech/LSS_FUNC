@@ -61,7 +61,8 @@ def main():
 
     print("Search index loaded", flush=True)
 
-    query_tok_reps = torch.load(os.path.join(args.query, "tok_reps.pt")).float()
+    # query_tok_reps = torch.load(os.path.join(args.query, "tok_reps.pt")).float()
+    query_tok_reps = np.load(os.path.join(args.query, "tok_reps"))
     all_query_offsets = torch.load(os.path.join(args.query, "offsets.pt"))
     ## query_cls_reps = torch.load(os.path.join(args.query, "cls_reps.pt")).float()
 
