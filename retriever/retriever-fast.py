@@ -110,7 +110,8 @@ def main():
             tok_scores = batched_tok_scores[i]
             ivl_maxed_scores = torch.empty(len(shard_scatter_map))
 
-            for j in range(tok_scores.size(0)):
+            # for j in range(tok_scores.size(0)):
+            for j in range(tok_scores.shape[0]):
                 ivl_maxed_scores.zero_()
                 # c_scatter.scatter_max(tok_scores[j].numpy(), ivl_scatter_map.numpy(), ivl_maxed_scores.numpy())
                 c_scatter.scatter_max(tok_scores[j], ivl_scatter_map, ivl_maxed_scores.numpy())
