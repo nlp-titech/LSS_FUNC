@@ -87,7 +87,8 @@ def main():
 
     if args.use_torch:
         # torch.save(torch.tensor(cls_reps), os.path.join(args.save_to, f'shard_{args.shard_id:02d}', 'cls_reps.pt'))
-        torch.save(torch.tensor(cls_ids), os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids.pt"))
+        # torch.save(torch.tensor(cls_ids), os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids.pt"))
+        torch.save(cls_ids, os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids.pt"))
     else:
         # np.save(os.path.join(args.save_to, f'shard_{args.shard_id:02d}', 'cls_reps'), cls_reps)
         np.save(os.path.join(args.save_to, f"shard_{args.shard_id:02d}", "cls_ex_ids"), cls_ids)
