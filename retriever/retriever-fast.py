@@ -98,7 +98,7 @@ def main():
             q_tok_reps = query_tok_reps[batched_qtok_offsets[q_tok_id]]
             tok_reps = tok_id_2_reps[q_tok_id]
             # tok_scores = torch.matmul(q_tok_reps, tok_reps.transpose(0, 1)).relu_()  # Bt * Ds
-            tok_scores = np.dot(q_tok_reps, tok_reps)
+            tok_scores = np.dot(q_tok_reps, tok_reps.transpose(1, 0))
             if args.weight_dir is not None:
                 tok_scores *= weight[q_tok_id]
             batched_tok_scores.append(tok_scores)
