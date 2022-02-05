@@ -122,7 +122,8 @@ def main():
 
     # post processing
     all_query_match_scores = torch.cat(all_query_match_scores, dim=0)
-    all_query_exids = torch.cat([cls_ex_ids[inids] for inids in all_query_inids], dim=0)
+    # all_query_exids = torch.cat([cls_ex_ids[inids] for inids in all_query_inids], dim=0)
+    all_query_exids = np.concatenate([cls_ex_ids[inids] for inids in all_query_inids], dim=0)
 
     torch.save((all_query_match_scores, all_query_exids), args.save_to)
 
