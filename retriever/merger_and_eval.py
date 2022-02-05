@@ -27,8 +27,8 @@ def main():
             if i == 0:
                 continue
             qid, did, score = line.strip().split("\t")
-            if qid not in reference:
-                qrel[qid] = default(float)
+            if qid not in qrel:
+                qrel[qid] = defaultdict(float)
             qrel[qid][did] += float(score)
 
     pbar = tqdm(partitions)
