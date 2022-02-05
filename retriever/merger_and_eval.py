@@ -56,7 +56,7 @@ def main():
     recall_100 = 0
     for qid in scores.keys():
         ndcg_10 += scores[qid]["ndcg_cut_10"]
-        recall_100 += scores[qid]["recall_cut_1000"]
+        recall_100 += scores[qid]["recall_100"]
 
     print({"NDCG@10": round(ndcg_10, 5), "Recall@100": round(recall_100, 5)})
 
