@@ -2,7 +2,6 @@ import os
 import torch
 import pytrec_eval
 import numpy as np
-from collections import defaultdict
 from argparse import ArgumentParser
 from tqdm import tqdm
 from typing import List
@@ -29,8 +28,8 @@ def main():
                 continue
             qid, did, score = line.strip().split("\t")
             if qid not in qrel:
-                qrel[qid] = defaultdict(int)
-            qrel[qid][did] += int(score)
+                qrel[qid] = dict()
+            qrel[qid][did] = int(score)
 
     pbar = tqdm(partitions)
 
