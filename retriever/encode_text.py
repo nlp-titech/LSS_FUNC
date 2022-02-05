@@ -111,7 +111,6 @@ def main():
                 for k, v in batch.items():
                     batch[k] = v.to(training_args.device)
                 _, reps = model.encode_corpus_raw(batch)
-                reps /= torch.norm(reps, dim=2).unsqueeze(-1)
                 encoded.append(reps.cpu())
     all_reps = torch.cat(encoded).numpy()
     all_pids = []
