@@ -52,7 +52,7 @@ def main():
                     result[qid][idx] += s
 
     evaluator = pytrec_eval.RelevanceEvaluator(qrel, {"recall.100", "ndcg_cut.10"})
-    scores = evaluator.evaluate((result))
+    scores = evaluator.evaluate(result)
     ndcg_10 = 0
     recall_100 = 0
     for qid in scores.keys():
