@@ -58,6 +58,9 @@ def main():
         ndcg_10 += scores[qid]["ndcg_cut_10"]
         recall_100 += scores[qid]["recall_100"]
 
+    ndcg_10 /= len(scores)
+    recall_100 /= len(scores)
+
     print({"NDCG@10": round(ndcg_10, 5), "Recall@100": round(recall_100, 5)})
 
 
