@@ -46,9 +46,9 @@ def main():
 
             for s, idx in zip(q_doc_scores, q_doc_indices):
                 if idx not in result[qid]:
-                    result[qid][idx] = s
+                    result[qid][idx] = float(s)
                 else:
-                    result[qid][idx] += s
+                    result[qid][idx] += float(s)
 
     evaluator = pytrec_eval.RelevanceEvaluator(qrel, {"recall.100", "ndcg_cut.10"})
     scores = evaluator.evaluate(result)
