@@ -1,6 +1,7 @@
 import os
 import torch
 import pytrec_eval
+import numpy as np
 from collections import defaultdict
 from argparse import ArgumentParser
 from tqdm import tqdm
@@ -33,7 +34,7 @@ def main():
 
     pbar = tqdm(partitions)
 
-    q_lookup: List[str] = list(torch.load(args.query_lookup))
+    q_lookup: List[str] = list(np.load(args.query_lookup))
     result = dict()
 
     for part_name in pbar:
