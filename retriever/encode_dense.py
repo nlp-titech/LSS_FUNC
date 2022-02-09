@@ -20,6 +20,7 @@ import numpy as np
 import torch
 import argparse
 
+from tqdm import tqdm
 from beir.retrieval import models
 from beir.datasets.data_loader import GenericDataLoader
 
@@ -41,7 +42,7 @@ def main():
     model = models.SentenceBERT(args.model_path)
 
     rep_index = []
-    for idx in range(0, len(corpus), args.batch_size):
+    for idx in tqdm(range(0, len(corpus), args.batch_size)):
         batch_corpus = corpus[idx : args.batch_size]
         with torch.no_grad():
             c_rep = model.encode_corpus(batch_corpus, batch_size=args.batch_size)
