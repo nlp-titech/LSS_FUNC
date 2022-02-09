@@ -48,9 +48,9 @@ def main():
         batch_corpus = l_corpus[idx:end_idx]
         with torch.no_grad():
             c_rep = model.encode_corpus(batch_corpus, batch_size=args.batch_size)
-        rep_index.append(c_rep.cpu())
+        rep_index.append(c_rep)
 
-    rep_index = torch.cat(rep_index)
+    rep_index = np.vstack(rep_index)
     rep_index = rep_index.numpy()
     np.save(args.output_path, rep_index)
 
