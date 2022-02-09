@@ -45,7 +45,7 @@ def main():
     l_corpus = list(corpus.values())
     for idx in tqdm(range(0, len(l_corpus), args.batch_size)):
         end_idx = idx + args.batch_size
-        batch_corpus = corpus[idx:end_idx]
+        batch_corpus = l_corpus[idx:end_idx]
         with torch.no_grad():
             c_rep = model.encode_corpus(batch_corpus, batch_size=args.batch_size)
         rep_index.append(c_rep.cpu())
