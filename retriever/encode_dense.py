@@ -39,11 +39,13 @@ def main():
 
     args = parser.parse_args()
     corpus, queries, qrels = GenericDataLoader(args.data_dir).load(split="test")
+    print(type(corpus))
     model = models.SentenceBERT(args.model_path)
 
     rep_index = []
     for idx in tqdm(range(0, len(corpus), args.batch_size)):
-        batch_corpus = corpus[idx : args.batch_size]
+        end_idx = idx + args.batch_size
+        batch_corpus = corpus[idx:end_idx]
         with torch.no_grad():
             c_rep = model.encode_corpus(batch_corpus, batch_size=args.batch_size)
         rep_index.append(c_rep.cpu())
