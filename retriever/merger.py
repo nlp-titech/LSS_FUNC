@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import torch
 import faiss
 from argparse import ArgumentParser
@@ -34,7 +35,8 @@ def main():
             print(f"Initializing Heap. Assuming {scores.shape[0]} queries.")
             rh = faiss.ResultHeap(scores.shape[0], args.depth)
         # rh.add_result(-scores.numpy(), indices.numpy())
-        rh.add_result(-scores, indices)
+        print(scores, indices)
+        rh.add_result(-scores.numpy(), np.array(indices))
     rh.finalize()
 
     corpus_scores, corpus_indices = (-rh.D).tolist(), rh.I.tolist()
