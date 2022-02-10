@@ -51,7 +51,6 @@ def main():
         rep_index.append(c_rep)
 
     rep_index = np.vstack(rep_index)
-    rep_index = rep_index.numpy()
     np.save(args.output_path, rep_index)
 
 
