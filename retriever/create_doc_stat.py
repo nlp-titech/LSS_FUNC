@@ -35,7 +35,7 @@ def main(args):
             del jline["_id"]
             corpus[cid] = jline
 
-    tokenizer = AutoTokenizer(args.tokenizer_path)
+    tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_path)
     idf, doc_len_ave = calc_idf_and_doclen(corpus, tokenizer)
     idf_path = os.path.join(args.output_dir, "idf.json")
     with open(idf_path, "w") as f:
