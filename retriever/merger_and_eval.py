@@ -15,6 +15,7 @@ def main():
     parser.add_argument("--depth", type=int, required=True)
     parser.add_argument("--num_query", type=int)
     parser.add_argument("--save_ranking_to", required=True)
+    parser.add_argument("--eval_result")
     parser.add_argument("--marco_document", action="store_true")
     args = parser.parse_args()
 
@@ -61,7 +62,14 @@ def main():
     ndcg_10 /= len(scores)
     recall_100 /= len(scores)
 
-    print({"NDCG@10": round(ndcg_10, 5), "Recall@100": round(recall_100, 5)})
+    eval_result = {"NDCG@10": round(ndcg_10, 5), "Recall@100": round(recall_100, 5)})
+    print(eval_result)
+
+    with open(args.save_ranking_to, "w") as f:
+        json.dump(result, f)
+
+    with open(args.eval_result, "w") as f:
+        json.dump(eval_result, f)
 
 
 if __name__ == "__main__":
