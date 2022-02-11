@@ -102,7 +102,11 @@ def main():
 
     idf_path = os.path.join(args.stats_dir, "idf.json")
     with open(idf_path) as f:
-        idf = json.load(f)
+        idf_str = json.load(f)
+
+    idf = {}
+    for k, v in idf_str.items():
+        idf[int(k)] = v
 
     doc_len_path = os.path.join(args.stats_dir, "doc_len_ave.npy")
     doc_len_ave = np.load(doc_len_path)
