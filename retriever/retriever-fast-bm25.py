@@ -94,13 +94,6 @@ def main():
     cls_ex_ids = torch.load(os.path.join(args.doc_shard, "cls_ex_ids.pt"))
     # cls_ex_ids = np.load(os.path.join(args.doc_shard, "cls_ex_ids.npy"))
     tok_id_2_reps = dict_2_float(tok_id_2_reps)
-    if args.weight_dir is not None:
-        weight_path = os.path.join(args.weight_dir, "model.pt")
-        if os.path.exists(weight_path):
-            model_dict = torch.load(weight_path, map_location="cpu")
-            weight = model_dict["vocab_weight.weight"]
-        else:
-            raise OSError("path doesn't exist")
 
     print("Search index loaded", flush=True)
 
