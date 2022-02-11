@@ -62,7 +62,7 @@ def main():
     ndcg_10 /= len(scores)
     recall_100 /= len(scores)
 
-    eval_result = {"NDCG@10": round(ndcg_10, 5), "Recall@100": round(recall_100, 5)})
+    eval_result = {"NDCG@10": round(ndcg_10, 5), "Recall@100": round(recall_100, 5)}
     print(eval_result)
 
     with open(args.save_ranking_to, "w") as f:
