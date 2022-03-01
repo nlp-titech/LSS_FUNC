@@ -248,11 +248,11 @@ class LSSSearcher:
                     doc_len = did2doc_len[did]
                     if qid == did:
                         continue
-                    if score_func == "maxsim":
+                    if score_func == "C-token":
                         score = self._maxsim(soft_tf)
-                    elif score_func == "maxsim_idf":
+                    elif score_func == "C-idf":
                         score = self._maxsim_idf(soft_tf)
-                    elif score_func == "maxsim_bm25":
+                    elif score_func == "C-bm25":
                         score = self._maxsim_bm25(soft_tf, doc_len)
                     elif score_func == "bm25_maxsim":
                         score = self._bm25_maxsim(soft_tf, qid, did)
