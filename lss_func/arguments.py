@@ -39,6 +39,8 @@ class ModelArguments:
     tok_layer: int = field(default=-1)
     pooler_mode: str = field(default="ave", metadata={"help": "token or ave"})
     window_size: int = field(default=5, metadata={"help": "window size of ave pooling"})
+    max_length: int = field(default=512)
+    encode_raw: bool = field(default=True) 
 
 
 @dataclass
@@ -71,6 +73,14 @@ class DataArguments:
     )
     query: bool = field(default=False, metadata={"help": "if encode query, store true"})
     vocab_weight_path: str = field(default=None, metadata={"help": "Path to vocab weight path"})
+    dataset: str = field(default=None, metadata={"help": "set beir dataset name"})
+    index: str = field(default=None, metadata={"help": "set anserini index"})
+    resultpath: str = field(default=None, metadata={"help": "result path"})
+    root_dir: str = field(default=None, metadata={"help": "set root dir of beir"})
+    initialize: bool = field(default=True, metadata={"help": "initialize elastic search index"})
+    doc_max_length: int = field(default=None, metadata={"help": "doc_max_length"})
+    # window_size: int = field(default=5, metadata={"help": "doc_max_length"})
+    norm: bool = field(default=True, metadata={"help": "normalize vec when scoreing"})
 
     def __post_init__(self):
         if self.train_dir is not None:

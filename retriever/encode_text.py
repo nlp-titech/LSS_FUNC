@@ -84,7 +84,7 @@ def main():
     set_seed(training_args.seed)
 
     model = Coil(model_args.model_name_or_path, model_args)
-    tokenizer = model.d_tokenizer
+    tokenizer = model.tokenizer
 
     if training_args.local_rank > -1:
         raise NotImplementedError("Encoding with multi processes is not implemented.")
@@ -110,7 +110,7 @@ def main():
             with torch.no_grad():
                 for k, v in batch.items():
                     batch[k] = v.to(training_args.device)
-                _, reps = model.encode_corpus_raw(batch)
+                _, reps = model.encode_corpus_raw_proc(batch)
                 encoded.append(reps.cpu())
     all_reps = torch.cat(encoded).numpy()
     all_pids = []
