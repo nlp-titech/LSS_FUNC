@@ -254,6 +254,8 @@ class LSSSearcher:
                         score = self._maxsim_idf(soft_tf)
                     elif score_func == "C-bm25":
                         score = self._maxsim_bm25(soft_tf, doc_len)
+                    elif score_func == "C-tfidf":
+                        score = self._maxsim_tfidf(soft_tf)
                     elif score_func == "bm25_maxsim":
                         score = self._bm25_maxsim(soft_tf, qid, did)
                     else:
@@ -324,5 +326,13 @@ class LSSSearcher:
         for v, tf_scores in soft_tf.items():
             score += np.maximum(np.max(tf_scores), 0.0) * self.idf[v]
 
+        return score
+
+    def _maxsim_tfidf(self, soft_tf):
+        score = 0
+        for t, tf_scores in soft_tf.items():
+            tf = len(tf_scores)
+            maxsim = np.max(tf_scores)
+            score += self.idf[t] * maxsim * tf
         return score
 
