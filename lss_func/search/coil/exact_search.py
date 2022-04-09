@@ -215,8 +215,10 @@ class LSSSearcher:
         did2doc_len: Dict,
     ) -> torch.Tensor:
 
+
         qids = set(chain.from_iterable(q_tok2id.values()))
         batch_soft_tf = dict()
+        batch_tf_qd = dict()
         batch_results = {k: dict() for k in self.score_funcs}
         for k in self.score_funcs:
             for qid in qids:
@@ -225,10 +227,23 @@ class LSSSearcher:
         # batch_results = dict()
         for tq in tqdm(q_tok2id):
             qids = q_tok2id[tq]
+            tf_qid, tf_q = np.unique(qids, return_counts=True)
+            tq_tf_q = {str(qid): tf for qid, tf in zip(tf_qid, tf_q)}
             if tq not in d_tok2id:
                 continue
             q_rep = q_tok2rep[tq]
             dids = d_tok2id[tq]
+            tf_did, tf_d = np.unique(dids, return_counts=True)
+            td_tf_d = {str(did): tf for did, tf in zip(tf_did, tf_d)}
+            for qid, qtf in tq_tf_q.items():
+                if qid not in batch_tf_qd:
+                    batch_tf_qd[qid] = dict()
+                for did, dtf in td_tf_d.items():
+                    if did not in batch_tf_qd[qid]:
+                        batch_tf_qd[qid][did] = dict()
+
+                    batch_tf_qd[qid][did][tq] = (qtf, dtf)
+
             d_rep = d_tok2rep[tq]
             sims = np.maximum(np.dot(q_rep, d_rep.T), 0.0)
             for qid, q_sim in zip(qids, sims):
@@ -246,16 +261,15 @@ class LSSSearcher:
                         continue
 
                     doc_len = did2doc_len[did]
+                    tfs = batch_tf_qd[qid][did]
                     if qid == did:
                         continue
-                    if score_func == "maxsim":
-                        score = self._maxsim(soft_tf)
-                    elif score_func == "maxsim_idf":
-                        score = self._maxsim_idf(soft_tf)
-                    elif score_func == "maxsim_bm25":
-                        score = self._maxsim_bm25(soft_tf, doc_len)
-                    elif score_func == "bm25_maxsim":
-                        score = self._bm25_maxsim(soft_tf, qid, did)
+                    if score_func == "maxsim_qtf":
+                        score = self._maxsim_qtf(soft_tf, tfs)
+                    elif score_func == "maxsim_idf_qtf":
+                        score = self._maxsim_idf_qtf(soft_tf, tfs)
+                    elif score_func == "maxsim_bm25_qtf":
+                        score = self._maxsim_bm25_qtf(soft_tf, doc_len, tfs)
                     else:
                         raise ValueError
                     
@@ -291,38 +305,36 @@ class LSSSearcher:
 
         return tg_reps
 
-    def _maxsim_bm25(self, soft_tf, doc_len):
+    def _maxsim_bm25_qtf(self, soft_tf, doc_len, tfs):
         score = 0
         for t, tf_scores in soft_tf.items():
-            tf = len(tf_scores)
-            maxsim = np.max(tf_scores)
+            qd_tf = tfs[t]
+            d_tf = qd_tf[1]
+            # tf = len(tf_scores)
+            # sumsim = np.sum(tf_scores)
+            sumsim = np.sum(np.max(np.array(tf_scores).reshape(qd_tf), axis=1))
             score += (
                 self.idf[t]
-                * maxsim
-                * tf
+                * sumsim
+                * d_tf
                 * (1 + self.bm25_k1)
-                / (tf + self.bm25_k1 * (1 - self.bm25_b + self.bm25_b * doc_len / self.doc_len_ave))
+                / (d_tf + self.bm25_k1 * (1 - self.bm25_b + self.bm25_b * doc_len / self.doc_len_ave))
             )
         return score
 
-    def _bm25_maxsim(self, soft_tf, qid, did):
-        coef = np.mean([np.max(v) for v in soft_tf.values()])
-        try:
-            return (1 + coef) * self.ret_score[qid][did]
-        except KeyError:
-            return 0.0
-
-    def _maxsim(self, soft_tf):
+    def _maxsim_qtf(self, soft_tf, tfs):
         score = 0.0
-        for v, tf_scores in soft_tf.items():
-            score += np.maximum(np.max(tf_scores), 0.0)
+        for t, tf_scores in soft_tf.items():
+            qd_tf = tfs[t]
+            score += np.sum(np.max(np.array(tf_scores).reshape(qd_tf), axis=1))    
 
         return score
 
-    def _maxsim_idf(self, soft_tf):
+    def _maxsim_idf_qtf(self, soft_tf, tfs):
         score = 0.0
-        for v, tf_scores in soft_tf.items():
-            score += np.maximum(np.max(tf_scores), 0.0) * self.idf[v]
+        for t, tf_scores in soft_tf.items():
+            qd_tf = tfs[t]
+            score += np.sum(np.max(np.array(tf_scores).reshape(qd_tf), axis=1)) * self.idf[t]
 
         return score
 
