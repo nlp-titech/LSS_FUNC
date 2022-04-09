@@ -181,8 +181,8 @@ class COIL_Core(nn.Module):
         reps = model_out.last_hidden_state
         return cls_rep, reps
 
-    def encode_raw_proc(self, **featues):
-        cls_rep, reps = self.encode_ras(**features)
+    def encode_raw_proc(self, **features):
+        cls_rep, reps = self.encode_raw(**features)
         reps  = self._preproc_rep(reps, features)
         return cls_rep, reps
 

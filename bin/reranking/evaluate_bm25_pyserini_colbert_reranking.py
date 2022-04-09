@@ -4,7 +4,7 @@ from beir.retrieval.evaluation import EvaluateRetrieval
 from beir.retrieval.search.lexical import BM25Search as BM25
 from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
 from beir.retrieval import models
-from beir.retrieval.search.colbert.exact_search import COLBERTSSearcher
+from lss_func.search.colbert.exact_search import COLBERTSSearcher
 
 import argparse
 import pathlib, os

@@ -5,7 +5,7 @@ from beir.retrieval.evaluation import EvaluateRetrieval
 from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 
-from beir.retrieval.search.coil.exact_search import LSSSearcher
+from lss_func.search.coil.coil.exact_search import LSSSearcher
 from beir.retrieval import models
 from dataclasses import dataclass, field
 from transformers import (
@@ -132,8 +132,7 @@ base_model.eval()
 idf, doc_len_ave = calc_idf_and_doclen(corpus, base_model.tokenizer, base_model.sep)
 
 
-# score_functions = ["maxsim", "maxsim_idf", "maxsim_bm25", "bm25_maxsim"]
-# score_functions = ["maxsim_bm25", "maxsim_bm25_sum"]
+score_functions = ["maxsim_qtf", "maxsim_idf_qtf", "maxsim_bm25_qtf"]
 score_functions = data_args.funcs.strip().split(",")
 poolers = data_args.pooler.strip().split(",")
 # poolers = ["local_ave"]

@@ -1,24 +1,20 @@
 # FROM Sentence-BERT(https://github.com/UKPLab/sentence-transformers/blob/master/examples/training/ms_marco/train_bi-encoder_mnrl.py) with minimal changes.
 # Original License Apache2, NOTE: Trained MSMARCO models are NonCommercial (from dataset License)
 
-import sys
+import random
+import argparse
 import json
-from torch.utils.data import DataLoader
-from sentence_transformers import SentenceTransformer, LoggingHandler, util, evaluation, InputExample
-from beir.datasets.data_loader import GenericDataLoader
-import splade
 import logging
 from datetime import datetime
 import gzip
 import os
-import tarfile
 from tqdm import tqdm
+
+from torch.utils.data import DataLoader
+from sentence_transformers import SentenceTransformer, LoggingHandler, util, evaluation, InputExample
+from beir.datasets.data_loader import GenericDataLoader
+from lss_func.models import splade
 from torch.utils.data import Dataset
-import random
-from shutil import copyfile
-import pickle
-import argparse
-# import losses
 
 #### Just some code to print debug information to stdout
 logging.basicConfig(

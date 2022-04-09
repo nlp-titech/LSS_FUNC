@@ -338,3 +338,11 @@ class LSSSearcher:
 
         return score
 
+    def _maxsim_tfidf(self, soft_tf):
+        score = 0
+        for t, tf_scores in soft_tf.items():
+            tf = len(tf_scores)
+            maxsim = np.max(tf_scores)
+            score += self.idf[t] * maxsim * tf
+        return score
+

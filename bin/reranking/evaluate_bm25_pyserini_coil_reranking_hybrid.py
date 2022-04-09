@@ -5,8 +5,9 @@ from beir.retrieval.evaluation import EvaluateRetrieval
 from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
-from beir.retrieval.search.coil.exact_search import LSSSearcher
+from lss_func.search.coil.exact_search import LSSSearcher
 from beir.retrieval import models
+from lss_func.models import coil
 from dataclasses import dataclass, field
 from transformers import (
     HfArgumentParser,
@@ -95,7 +96,7 @@ def debug_score(results, func_name):
 
 
 #### /print debug information to stdout
-parser = HfArgumentParser((models.coil.ModelArguments, DataArgument))
+parser = HfArgumentParser((coil.ModelArguments, DataArgument))
 (model_args, data_args) = parser.parse_args_into_dataclasses()
 
 k1 = 0.9
@@ -134,15 +135,14 @@ dense_retriever = EvaluateRetrieval(model, score_function="cos_sim", k_values=k_
 dense_rerank_results = dense_retriever.rerank(corpus, queries, results, top_k=100)
 
 #### Reranking top-100 docs using Dense Retriever model
-base_model = models.Coil(model_args.model_name_or_path, model_args)
+base_model = coil.Coil(model_args.model_name_or_path, model_args)
 base_model.eval()
 idf, doc_len_ave = calc_idf_and_doclen(corpus, base_model.tokenizer, base_model.sep)
 
 
 score_functions = ["maxsim_bm25_qtf"]
 # score_functions = ["maxsim"]
-poolers = ["local_ave"]
-# poolers = ["local_ave"]
+poolers = ["ave"]
 eval_result = defaultdict(dict)
 # with ProcessPoolExecutor(max_workers=4, mp_context=mp.get_context("spawn")) as executor:
 for pooler in poolers:
