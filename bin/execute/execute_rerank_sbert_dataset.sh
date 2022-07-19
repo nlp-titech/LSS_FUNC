@@ -28,7 +28,7 @@ result_dir=$root_dir/$dataset/result/cos/$model_type
 
 mkdir -p $result_dir
 
-if [ $model_type = msmarco ];
+if [ $model_type = dense ];
 then
   model_name_or_path=/path/to/dense/retriever/path
   sim_func=cos_sim

@@ -5,7 +5,7 @@ out_dir=/path/to/out_dir
 data_dir=/path/to/BEIR/msmarco_dir
 
 
-python train_msmarco_v3_lss.py \
+python ../training/train_msmarco_v3_lss.py \
   --train_batch_size 20 \
   --max_seq_length 300 \
   --model_name $model_name \

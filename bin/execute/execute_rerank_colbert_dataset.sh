@@ -18,7 +18,7 @@ fi
 
 echo $result_dir
 
-python evaluate_bm25_pyserini_colbert_reranking.py \
+python ../rerank/evaluate_bm25_pyserini_colbert_reranking.py \
    --base_model_path_or_name $model_name_or_path \
    --batch_size 128 \
    --checkpoint $checkpoint_path \
