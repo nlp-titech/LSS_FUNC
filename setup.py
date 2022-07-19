@@ -5,7 +5,7 @@ from setuptools import setup
 
 # Package meta-data.
 NAME = "LSS_FUNC"
-DESCRIPTION = "dense retrieval and learning to rank."
+DESCRIPTION = "Codes for TOD95."
 URL = "https://github.com/meshidenn/"
 EMAIL = "hiroki.iida@nlp.c.titech.ac.jp"
 AUTHOR = "Hiroki Iida"
