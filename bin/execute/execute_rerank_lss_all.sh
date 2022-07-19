@@ -8,5 +8,5 @@ datasets=("arguana" "climate-fever" "dbpedia-entity" "fever" \
 for dataset in ${datasets[@]};
 do
   echo $dataset
-  bash execute_rerank_lss_hybrid_dataset.sh $model_type $dataset $root_dir
+  bash execute_rerank_lss_dataset.sh $model_type $dataset $root_dir
 done

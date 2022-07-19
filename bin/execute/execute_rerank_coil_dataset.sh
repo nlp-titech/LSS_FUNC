@@ -27,7 +27,7 @@ fi
 
 
 
-python ../rerank/evaluate_bm25_pyserini_coil_reranking_allfunc.py \
+python ../rerank/evaluate_bm25_pyserini_coil_reranking.py \
    --model_name_or_path $model_name_or_path \
    --resultpath $result_dir/rerank_result_${timestamp}_${commithash}.json \
    --dataset $dataset \
