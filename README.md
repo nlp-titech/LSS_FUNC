@@ -39,3 +39,6 @@ See Readme at `./bin`
 
 ## Retrieval Experiment
 See Readme at `./retriever`
+
+## Code for Case Study
+See Readme at `./analysis`

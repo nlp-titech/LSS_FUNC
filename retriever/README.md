@@ -1,7 +1,7 @@
 # Retriever
-This Retriever is based on [COIL]([COL repo](https://github.com/luyug/COIL/tree/main/retriever)).
+This Retriever is based on [COIL]([COIL repository](https://github.com/luyug/COIL/tree/main/retriever)).
 
-## Fast Retriver(This instraction is the same with [COL repo](https://github.com/luyug/COIL/tree/main/retriever))
+## Fast Retriver(This section is the same with [COIL](https://github.com/luyug/COIL/tree/main/retriever))
 It has come to my attention that `pytorch_scatter` does not scale well to multiple cores. I finally decided to write a C binding. While a pure C/C++ implementatoin 
 is typically the best for realworld setups, I hope this hybrid implementation can offer a sense of how much C code can speed up the stack.
 
@@ -17,16 +17,16 @@ To do retrieval about C-BM25, run the following steps,
 
 ### prepare idf and doc_len average
 To execute BM25, idf and average of doc_len is necessary. Thus, execute following 
-In the bash file, please set following params
+
 ```
-python encode_dense.py \
+python create_doc_stat.py \
     --corpus_path /path/to/robust04/corpus.jsonl \
     --tokenizer_path /path/to/tokenizer \
     --output_dir /path/to/robust04/stats
 ```
 
-`execute/creaate_doc_stat.sh` contains the codes.
-Please execute the bash like following
+`execute/create_doc_stat.sh` contains the codes.
+Please execute the bash like following.
 
 ```
 $ cd execute

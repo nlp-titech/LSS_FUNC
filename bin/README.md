@@ -55,7 +55,7 @@ The settings are written in `execute_rerank_colbert_dataset.sh`.
 
 ## SPLADE
 The script for SPLADE is `evaluate_bm25_pyserini_splade_reranking.py`
-the settings are written in `execute_rerank_splade_dataset.sh`.
+The settings are written in `execute_rerank_splade_dataset.sh`.
 
 # Others
 For utility, we prepare `**_all.sh` to execute experiments on all dataset at once.
