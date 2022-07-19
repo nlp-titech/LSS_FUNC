@@ -21,56 +21,24 @@ module load openjdk/11.0.6.10
 model_type=$1
 dataset=$2
 root_dir=$3
-index_dir=${SGE_LOCALDIR}/$dataset/lucene-index.sep_title.pos+docvectors+raw
+index_dir=${root_dir}/$dataset/lucene-index.sep_title.pos+docvectors+raw
 timestamp=`date +%Y%m%d`
 commithash=`git rev-parse HEAD`
 result_dir=$root_dir/$dataset/result/cos/$model_type
 
 mkdir -p $result_dir
-echo $dataset
 
-cp -r $root_dir/$dataset/index ${SGE_LOCALDIR}/$dataset/
-cp -r $root_dir/$dataset/qrels ${SGE_LOCALDIR}/$dataset/
-cp $root_dir/$dataset/*.jsonl ${SGE_LOCALDIR}/$dataset/
-
-ls ${SGE_LOCALDIR}/$dataset/
-
-if [ $model_type = nli ];
+if [ $model_type = msmarco ];
 then
-  model_name_or_path=sentence-transformers/nli-mpnet-base-v2
-  sim_func=cos_sim
-elif [ $model_type = msmarco ];
-then
-  model_name_or_path=/groups/gcb50243/iida.h/BEIR/model/output/microsoft/mpnet-base-v3-msmarco
-  # model_name_or_path=/groups/gcb50243/iida.h/BEIR/model/output/microsoft/mpnet-base-v3-msmarco-2022-02-19_08-27-23
-  sim_func=cos_sim
-elif [ $model_type = msmarco1 ];
-then
-  model_name_or_path=/groups/gcb50243/iida.h/BEIR/model/output/microsoft/mpnet-base-v3-msmarco-2022-02-19_08-27-23
-  sim_func=cos_sim
-elif [ $model_type = msmarco2 ];
-then
-  model_name_or_path=/groups/gcb50243/iida.h/BEIR/model/output/microsoft/mpnet-base-v3-msmarco-2022-02-19_17-44-32
-  sim_func=cos_sim
-elif [ $model_type = msmarco-dot ];
-then
-  model_name_or_path=/groups/gcb50243/iida.h/BEIR/model/output/microsoft/mpnet-base-v3-msmarco-dot
-  sim_func=dot
-elif [ $model_type = simcse ];
-then
-  model_name_or_path="/groups/gcb50243/iida.h/simcse/output/train_simcse-mpnet-base-simcse-wiki-2022-01-22_00-49-14/177"
-  sim_func=cos_sim
-elif [ $model_type = tas-b ];
-then
-  model_name_or_path="/groups/gcb50243/iida.h/model/msmarco-distilbert-base-tas-b"
+  model_name_or_path=/path/to/dense/retriever/path
   sim_func=cos_sim
 fi
 
 
-python evaluate_bm25_pyserini_sbert_reranking.py \
+python ../rerank/evaluate_bm25_pyserini_sbert_reranking.py \
    --model_path $model_name_or_path \
    --resultpath $result_dir/rerank_result_${timestamp}_${commithash}.json \
    --dataset $dataset \
-   --root_dir ${SGE_LOCALDIR} \
+   --root_dir $root_dir \
    --index $index_dir \
    --sim_func $sim_func

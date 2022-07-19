@@ -1,4 +1,5 @@
 '''
+This script is from https://github.com/UKPLab/sentence-transformers/blob/master/examples/training/ms_marco/train_bi-encoder-v3.py
 This example shows how to train a SOTA Bi-Encoder for the MS Marco dataset (https://github.com/microsoft/MSMARCO-Passage-Ranking).
 The model is trained using hard negatives which were specially mined with different dense and lexical search methods for MSMARCO. 
 
@@ -15,8 +16,7 @@ Negative passage are hard negative examples, that were mined using different den
 Each positive and negative passage comes with a score from a Cross-Encoder. This allows denoising, i.e. removing false negative
 passages that are actually relevant for the query.
 
-Running this script:
-python train_msmarco_v3.py
+Note that  Original License Apache2, NOTE: Trained MSMARCO models are NonCommercial (from dataset License)
 '''
 
 from sentence_transformers import SentenceTransformer, models, losses, InputExample
