@@ -34,3 +34,8 @@ execute the bash file like following.
 $ bash util index_pyserini.sh <root_dir of dataset>
 ```
 
+## Reranking Experiment
+See Readme at `./bin`
+
+## Retrieval Experiment
+See Readme at `./retriever`
