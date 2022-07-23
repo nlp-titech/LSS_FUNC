@@ -3,11 +3,11 @@ from beir.datasets.data_loader import GenericDataLoader
 from beir.retrieval.evaluation import EvaluateRetrieval
 from beir.retrieval.search.lexical import BM25Search as BM25
 from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
-from beir.retrieval import models
+from lss_func.models import colbert
 from lss_func.search.colbert.exact_search import COLBERTSSearcher
 
 import argparse
-import pathlib, os
+import os
 import logging
 import random
 import json
@@ -16,7 +16,6 @@ from typing import List, Dict
 from distutils.util import strtobool
 
 from tqdm import tqdm
-from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 
 
@@ -57,9 +56,6 @@ k_values = [1, 3, 5, 10, 100]
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 dataset = args.dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = os.path.join(args.root_dir, dataset)
 
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
@@ -77,11 +73,11 @@ for qid, query in tqdm(queries.items()):
 
 
 #### Reranking top-100 docs using Dense Retriever model 
-base_model = models.ColBERT(args.base_model_path_or_name, 
-                            args.checkpoint_path,
-                            query_maxlen=args.query_maxlen,
-                            doc_maxlen=args.doc_maxlen,
-                            mask_punctuation=args.mask_punctuation)
+base_model = colbert.ColBERT(args.base_model_path_or_name,
+                             args.checkpoint_path,
+                             query_maxlen=args.query_maxlen,
+                             doc_maxlen=args.doc_maxlen,
+                             mask_punctuation=args.mask_punctuation)
 model = COLBERTSSearcher(base_model, results, batch_size=args.batch_size)
 dense_retriever = EvaluateRetrieval(model, score_function="cos_sim", k_values=k_values)
 

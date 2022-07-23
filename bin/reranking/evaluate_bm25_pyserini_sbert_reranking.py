@@ -6,7 +6,7 @@ from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
 from beir.retrieval import models
 
 import argparse
-import pathlib, os
+import os
 import logging
 import random
 import json
@@ -14,7 +14,6 @@ from collections import defaultdict
 from typing import List, Dict
 
 from tqdm import tqdm
-from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 
 
@@ -52,9 +51,6 @@ k_values = [1, 3, 5, 10, 100]
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 dataset = args.dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = os.path.join(args.root_dir, dataset)
 
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
@@ -85,7 +81,7 @@ if args.hybrid:
                 rerank_results[qid][did] += results[qid][did]
 
 #### Evaluate your retrieval using NDCG@k, MAP@K ...
-ndcg, _map, recall, precision, hole = dense_retriever.evaluate(qrels, rerank_results, k_values)
+ndcg, _map, recall, precision = dense_retriever.evaluate(qrels, rerank_results, k_values)
 
 #### Print top-k documents retrieved ####
 top_k = 10

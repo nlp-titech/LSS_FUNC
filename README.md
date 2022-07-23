@@ -22,17 +22,30 @@ To use the retriever, you need in addition,
 torch_scatter==2.0.6
 ```
 
+For installtion, please execute follwing.
+
+```
+pip install ./
+```
+
 ## Premise
 We use BEIR dataset. Please set each dataset under root_dir you set. Please see the way of prepareing dataset [here](https://github.com/beir-cellar/beir/tree/main/examples/dataset).
 
 
 ## Prepare BM25 index for reranking experiment
-Please create index for BM25 using pyserini.
-`util/index_pyserini.sh` can make it.
-execute the bash file like following.
+First, please convert files of BEIR format to pyserini format, using the following command.
+
 ```
-$ bash util index_pyserini.sh <root_dir of dataset>
+$ python util/beir2pyserini.py --in_dir /path/to/BEIR/datasets/root --out_dir /path/to/each/dataset/bm25_index --sep_title
 ```
+
+Next, please create index for BM25 using pyserini.
+`util/index_pyserini.sh` can make it. execute the bash file like following.
+```
+$ bash util/index_pyserini.sh /path/to/each/dataset/bm25_index
+```
+
+Note that pyserini needs [anserini](https://github.com/castorini/anserini), a java library.
 
 ## Reranking Experiment
 See Readme at `./bin`

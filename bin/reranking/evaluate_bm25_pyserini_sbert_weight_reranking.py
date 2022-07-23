@@ -3,11 +3,11 @@ from beir.datasets.data_loader import GenericDataLoader
 from beir.retrieval.evaluation import EvaluateRetrieval
 from beir.retrieval.search.lexical import BM25Search as BM25
 from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
-from beir.retrieval.models.sentence_bert import SentenceBERTOUTER
-from beir.retrieval.models.bm25_weight import BM25Weight
+from lss_func.models.bm25_weight import BM25Weight
+from lss_func.models.sentence_bert import SentenceBERTOUTER
 
 import argparse
-import pathlib, os
+import os
 import logging
 import random
 import json
@@ -16,7 +16,6 @@ from collections import defaultdict, Counter
 from typing import List, Dict
 
 from tqdm import tqdm
-from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.models import Transformer, WordWeights, Pooling
@@ -73,9 +72,6 @@ k_values = [1, 3, 5, 10, 100]
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 dataset = args.dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = os.path.join(args.root_dir, dataset)
 
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
@@ -96,8 +92,6 @@ tokenizer = word_embedding_model.tokenizer
 vocab = tokenizer.get_vocab()
 idf, doc_len_ave = calc_idf_and_doclen(corpus, tokenizer, args.sep)
 #### Reranking top-100 docs using Dense Retriever model 
-# model = DRES(models.SentenceBERT("msmarco-distilbert-base-v3"), batch_size=128)
-
 word_weights = BM25Weight(vocab=vocab, word_weights=idf, doc_len_ave=doc_len_ave)
 pooling_model = Pooling(word_embedding_model.get_word_embedding_dimension())
 sbert_model = SentenceTransformer(modules=[word_embedding_model, word_weights, pooling_model])

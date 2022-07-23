@@ -1,4 +1,5 @@
-root_dir=$1
+index_root=$1
+data_root=$2
 
 datasets=("arguana" "climate-fever" "dbpedia-entity" "fever" \
 "fiqa" "hotpotqa" "msmarco" "nfcorpus" "nq" "quora" "scidocs" "scifact" \
@@ -8,5 +9,5 @@ datasets=("arguana" "climate-fever" "dbpedia-entity" "fever" \
 for dataset in ${datasets[@]};
 do
   echo $i $dataset
-  bash execute_pyserini_bm25_dataset.sh $dataset $root_dir
+  bash execute_pyserini_bm25_dataset.sh $dataset $index_root $data_root
 done

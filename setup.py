@@ -43,7 +43,7 @@ setup(
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=["lss_func"],
+    packages=["lss_func", "lss_func.search", "lss_func.search.coil", "lss_func.search.colbert", "lss_func.models"],
     author=AUTHOR,
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,

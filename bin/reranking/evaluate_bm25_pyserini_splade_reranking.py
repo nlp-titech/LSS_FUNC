@@ -4,10 +4,10 @@ from beir.retrieval.evaluation import EvaluateRetrieval
 from beir.retrieval.search.lexical import BM25Search as BM25
 from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
 from beir.retrieval import models
-from lss_func.models import splade
+from lss_func.search import splade
 
 import argparse
-import pathlib, os
+import os
 import logging
 import random
 import json
@@ -15,7 +15,6 @@ from collections import defaultdict
 from typing import List, Dict
 
 from tqdm import tqdm
-from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 
 
@@ -51,9 +50,6 @@ k_values = [1, 3, 5, 10, 100]
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 dataset = args.dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = os.path.join(args.root_dir, dataset)
 
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
@@ -70,7 +66,6 @@ for qid, query in tqdm(queries.items()):
         results[qid][did] = score
 
 #### Reranking top-100 docs using Dense Retriever model 
-# model = DRES(models.SentenceBERT("msmarco-distilbert-base-v3"), batch_size=128)
 model = splade.Splade(args.model_path)
 model.eval()
 tokenizer = model.tokenizer

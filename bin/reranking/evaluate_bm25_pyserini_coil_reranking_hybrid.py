@@ -5,44 +5,27 @@ from beir.retrieval.evaluation import EvaluateRetrieval
 from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
-from lss_func.search.coil.exact_search import LSSSearcher
 from beir.retrieval import models
+from lss_func.search.coil.exact_search import LSSSearcher
 from lss_func.models import coil
-from dataclasses import dataclass, field
+from lss_func.arguments import ModelArguments, DataArguments, LSSArguments
 from transformers import (
     HfArgumentParser,
     set_seed,
 )
 from tqdm import tqdm
 
-import pathlib, os
+import os
 import logging
 import random
 import json
 from collections import Counter, defaultdict
 import numpy as np
-from concurrent.futures import ProcessPoolExecutor
-import multiprocessing as mp
 
 #### Just some code to print debug information to stdout
 logging.basicConfig(
     format="%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.INFO, handlers=[LoggingHandler()]
 )
-
-
-@dataclass
-class DataArgument:
-    dataset: str = field(metadata={"help": "set beir dataset name"})
-    index: str = field(metadata={"help": "set anserini index"})
-    resultpath: str = field(metadata={"help": "result path"})
-    root_dir: str = field(metadata={"help": "set root dir of beir"})
-    initialize: bool = field(default=True, metadata={"help": "initialize elastic search index"})
-    doc_max_length: int = field(default=None, metadata={"help": "doc_max_length"})
-    window_size: int = field(default=3, metadata={"help": "window_size"})
-    norm: bool = field(default=True, metadata={"help": "normalize vec when scoreing"})
-    funcs: str = field(default="maxsim_bm25_qtf", metadata={"help": "set scorefunc with csv. maxsim,maxsim_idf,"\
-    "maxsim_bm25,maxsim_qtf,maxsim_idf_qtf,maxsim_bm25_qtf"})
-
 
 
 def calc_idf_and_doclen(corpus, tokenizer, sep):
@@ -96,21 +79,16 @@ def debug_score(results, func_name):
 
 
 #### /print debug information to stdout
-parser = HfArgumentParser((coil.ModelArguments, DataArgument))
-(model_args, data_args) = parser.parse_args_into_dataclasses()
+parser = HfArgumentParser((ModelArguments, DataArguments, LSSArguments))
+(model_args, data_args, lss_args) = parser.parse_args_into_dataclasses()
 
 k1 = 0.9
-# k1 = 0.82
 b = 0.4
-# b = 0.68
 top_k = 100
 k_values = [1, 3, 5, 10, 100]
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 dataset = data_args.dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = os.path.join(data_args.root_dir, dataset)
 
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
@@ -140,11 +118,10 @@ base_model.eval()
 idf, doc_len_ave = calc_idf_and_doclen(corpus, base_model.tokenizer, base_model.sep)
 
 
-score_functions = ["maxsim_bm25_qtf"]
-# score_functions = ["maxsim"]
-poolers = ["ave"]
+score_functions = lss_args.funcs.strip().split(",")
+poolers = model_args.pooler_mode.strip().split(",")
+
 eval_result = defaultdict(dict)
-# with ProcessPoolExecutor(max_workers=4, mp_context=mp.get_context("spawn")) as executor:
 for pooler in poolers:
     model = LSSSearcher(
         base_model,
@@ -154,8 +131,9 @@ for pooler in poolers:
         batch_size=128,
         idf=idf,
         doc_len_ave=doc_len_ave,
-        doc_max_length=data_args.doc_max_length,
-        window_size=data_args.window_size,
+        doc_max_length=lss_args.doc_max_length,
+        window_size=model_args.window_size,
+        norm=model_args.norm,
     )
     dense_retriever = EvaluateRetrieval(model, score_function="cos_sim", k_values=[1, 3, 5, 10, 100])
 
@@ -166,7 +144,6 @@ for pooler in poolers:
     #### Evaluate your retrieval using NDCG@k, MAP@K ...
     for score_function in score_functions:
         rerank_results = all_rerank_results[score_function]
-        # post_proc_for_one_by_one(results, rerank_results)
         hybrid_results = dict()
         for qid in rerank_results:
             if qid not in hybrid_results:
@@ -182,7 +159,6 @@ for pooler in poolers:
         eval_result[score_function][pooler] = ndcg
 
         #### Print top-k documents retrieved ####
-        # show_top_k = 10
         query_id, ranking_scores = random.choice(list(rerank_results.items()))
         scores_sorted = sorted(ranking_scores.items(), key=lambda item: item[1], reverse=True)
         logging.info("Query : %s\n" % queries[query_id])

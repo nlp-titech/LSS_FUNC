@@ -25,6 +25,7 @@ def pairwise_dot_score(a: Tensor, b: Tensor):
 
     return (a * b).sum(dim=-1)
 
+
 def dot_score(a: Tensor, b: Tensor):
     """
     Computes the dot-product dot_prod(a[i], b[j]) for all i and j

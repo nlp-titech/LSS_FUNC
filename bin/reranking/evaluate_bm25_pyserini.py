@@ -1,8 +1,6 @@
-from typing import List
 from beir import LoggingHandler
 from beir.datasets.data_loader import GenericDataLoader
 from beir.retrieval.evaluation import EvaluateRetrieval
-from pyserini.pyclass import autoclass
 from pyserini.search import SimpleSearcher, JSimpleSearcherResult
 
 from dataclasses import dataclass, field
@@ -12,12 +10,12 @@ from transformers import (
 )
 from tqdm import tqdm
 
-import pathlib, os
+import os
 import logging
 import random
 import json
-from collections import Counter, defaultdict
-import numpy as np
+from collections import defaultdict
+from typing import List
 
 #### Just some code to print debug information to stdout
 logging.basicConfig(
@@ -53,9 +51,6 @@ k_values = [1, 3, 5, 10, 100]
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 dataset = data_args.dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = os.path.join(data_args.root_dir, dataset)
 
 #### Provide the data_path where nfcorpus has been downloaded and unzipped

@@ -53,9 +53,6 @@ k_values = [1, 3, 5, 10, 100]
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 dataset = args.dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = os.path.join(args.root_dir, dataset)
 
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
@@ -73,13 +70,7 @@ for qid, query in tqdm(queries.items()):
 
 #### Reranking using Cross-Encoder models #####
 #### https://www.sbert.net/docs/pretrained_cross-encoders.html
-# cross_encoder_model = CrossEncoder("cross-encoder/ms-marco-electra-base")
-cross_encoder_model = CrossEncoder(args.model_name_or_path, args.max_length)
-
-#### Or use MiniLM, TinyBERT etc. CE models (https://www.sbert.net/docs/pretrained-models/ce-msmarco.html)
-# cross_encoder_model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-# cross_encoder_model = CrossEncoder('cross-encoder/ms-marco-TinyBERT-L-6')
-
+cross_encoder_model = CrossEncoder(args.model_name_or_path, max_length=args.max_length)
 reranker = Rerank(cross_encoder_model, batch_size=args.batch_size)
 
 # Rerank top-100 results using the reranker provided

@@ -1,17 +1,17 @@
 #!/bin/bash
 
 dataset=$1
-root_dir=$2
-index_dir=$SGE_LOCALDIR/$dataset/index/lucene-index.sep_title.pos+docvectors+raw
-result_dir=$root_dir/$dataset/result
+index_root=$2
+data_root=$3
+
+index_dir=$index_root/$dataset/index/lucene-index.sep_title.pos+docvectors+raw
+result_dir=$index_root/$dataset/result
 
 mkdir -p $result_dir
-cp -r $root_dir/$dataset ${SGE_LOCALDIR}/$dataset/
-ls ${SGE_LOCALDIR}
 
 
-python ../rerank/evaluate_bm25_pyserini.py \
+python ../reranking/evaluate_bm25_pyserini.py \
    --resultpath $result_dir/pyserini_result.json \
    --dataset $dataset \
-   --root_dir ${SGE_LOCALDIR} \
+   --root_dir $data_root \
    --index $index_dir
