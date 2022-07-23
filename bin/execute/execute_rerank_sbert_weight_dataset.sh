@@ -12,8 +12,7 @@ result_dir=$index_root/$dataset/result/cos-weight/$model_type
 mkdir -p $result_dir
 if [ $model_type = dense ];
 then
-  # model_name_or_path=/path/to/dense/retriever/path
-  model_name_or_path=/home/gaia_data/iida.h/BEIR/lss_func/models/dense/mpnet-base-v3-msmarco-2022-02-19_17-44-32
+  model_name_or_path=/path/to/dense/retriever/path
 fi
 
 

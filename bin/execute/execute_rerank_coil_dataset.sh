@@ -16,14 +16,13 @@ echo $dataset
 
 if [ $model_type = coil-dot ];
 then
-  # model_name_or_path=/groups/gcb50243/iida.h/BEIR/model/COIL/train_model/coil_no-cls_microsoft/mpnet-base_64_300_768_32
-  model_name_or_path=/home/gaia_data/iida.h/BEIR/lss_func/models/coil/mpnet-base_64_300_768_32
+  model_name_or_path=/path/to/coil
   tok_dim=32
   enc_raw=False
   norm=False
 elif [ $model_type = coil-768-dot ];
 then
-  model_name_or_path=/groups/gcb50243/iida.h/BEIR/model/COIL/train_model/coil_no-cls_microsoft/mpnet-base_64_300_768_768
+  model_name_or_path=/path/to/coil
   tok_dim=768
   enc_raw=False
   norm=False

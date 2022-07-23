@@ -14,8 +14,7 @@ mkdir -p $result_dir
 if [ $model_type = colbert ];
 then
   model_name_or_path=bert-base-uncased
-  # checkpoint_path=/path/to/colbert_model
-  checkpoint_path=/home/gaia_data/iida.h/BEIR/lss_func/models/colbert/colbert-400000.dnn
+  checkpoint_path=/path/to/colbert_model
   max_length=180
 fi
 

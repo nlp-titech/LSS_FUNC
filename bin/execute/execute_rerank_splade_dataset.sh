@@ -14,8 +14,7 @@ mkdir -p $result_dir
 
 if [ $model_type = splade ];
 then
-  # model_name_or_path=/path/to/splade/model
-  model_name_or_path=/home/gaia_data/iida.h/BEIR/lss_func/models/splade/Splade_max_0.0006_0.0008_bert-base-uncased-batch_size_24-2022-02-10_19-50-00/0_MLMTransformer
+  model_name_or_path=/path/to/splade/model
 fi
 
 python ../reranking/evaluate_bm25_pyserini_splade_reranking.py \
