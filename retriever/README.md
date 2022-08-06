@@ -29,19 +29,41 @@ python create_doc_stat.py \
 Please execute the bash like following.
 
 ```
-$ cd execute
+$ cd ./execute
 $ bash create_doc_stat.sh
 ```
+
+### split docs
+Return to here.
+```
+$ cd /path/to/this/repo/retriever
+```
+
+Split corpus.jsonl by the folloinng command.
+```
+$ python split_corpus_data.py \
+  --corpus_file /path/to/corpus.jsonl \
+  --out_dir /path/to/output/split/corpus \
+  --split_num 100
+```
+
 ### encode docs to vecs
-Now, we are in `./execute`.
+Now, we go to `./execute` again.
+
+```
+$ cd ./execute
+```
+
 Encode docs to vecs for indexing. 
 
 - set following params in `execute/encode_doc_all.sh`
 ```
 ENCODE_OUT_DIR="/path/to/encode/doc"
-DATA_DIR="/path/to/data/"
+DATA_DIR="/path/to/output/split/corpus"
 CKPT_DIR="/path/to/model/"
 ```
+
+Note that DATA_DIR should be the same with out_dir of split_corpus_data.py.
 
 - execute the script
 ```
