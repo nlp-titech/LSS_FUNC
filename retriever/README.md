@@ -1,11 +1,7 @@
-# COIL Retriever
-We provide several implementaions of COIL retriever,
-- A fast batched retriver that uses Cython extension, `retriever-fast.py`. This retriever is substantially faster (10x on our system). Use it whenever you can if performance is a concern.
-- A pure python batched retriver that is based on external packages, `retriever-cb.py`.
-- A pure python sequential retriever, `retriever-compat.py`. Practical use of it is deprecated in favor of the other two.
-It remains in the repo as the most expressive implementation for educational purpose.
+# Retriever
+This Retriever is based on [COIL]([COIL repository](https://github.com/luyug/COIL/tree/main/retriever)).
 
-## Fast Retriver
+## Fast Retriver(This section is the same with [COIL](https://github.com/luyug/COIL/tree/main/retriever))
 It has come to my attention that `pytorch_scatter` does not scale well to multiple cores. I finally decided to write a C binding. While a pure C/C++ implementatoin 
 is typically the best for realworld setups, I hope this hybrid implementation can offer a sense of how much C code can speed up the stack.
 
@@ -16,55 +12,181 @@ pip install Cython
 python setup.py build_ext --inplace
 ```
 In extreme cases where you cannot get access to a compiler, consider use the pure python batched retirever.
-## Running Retrieval
-To do retrieval, run the following steps,
+## Running Retrieval with C-BM25
+To do retrieval about C-BM25, run the following steps,
 
-(Note that there is no dependency in the for loop within each step, meaning that if you are on a cluster, you can distribute the jobs across nodes using `srun` or `qsub`.)
+### prepare idf and doc_len average
+To execute BM25, idf and average of doc_len is necessary. Thus, execute following 
 
-1) build document index shards (pick number of shards based on your setup, we use 10 here)
 ```
-for i in $(seq 0 9)  
-do  
- python retriever/sharding.py \  
-   --n_shards 10 \  
-   --shard_id $i \  
-   --dir $ENCODE_OUT_DIR \  
-   --save_to $INDEX_DIR \  
-   --use_torch
-done  
-```
-2) reformat encoded query
-```
-python retriever/format_query.py \  
-  --dir $ENCODE_QRY_OUT_DIR \  
-  --save_to $QUERY_DIR \  
-  --as_torch
+python create_doc_stat.py \
+    --corpus_path /path/to/robust04/corpus.jsonl \
+    --tokenizer_path /path/to/tokenizer \
+    --output_dir /path/to/robust04/stats
 ```
 
-3) retrieve from each shard (pick retriever based on your setup)
-```
-for i in $(seq -f "%02g" 0 9)  
-do  
-  python retriever/{retriver-fast|retriever-cb|retriever-compat}.py \  
-      --query $QUERY_DIR \  
-      --doc_shard $INDEX_DIR/shard_${i} \  
-      --top 1000 \  
-      --save_to ${SCORE_DIR}/intermediate/shard_${i}.pt \
-      --batch_size 512  # only retriver-fast, retriever-cb have this argument
-done 
-```
-when using batched retriver `retriver-fast` or `retriever-cb`, set the batch size based on your hardware to get the best performance.
+`execute/create_doc_stat.sh` contains the codes.
+Please execute the bash like following.
 
-4) merge scores from all shards
 ```
-python retriever/merger.py \  
-  --score_dir ${SCORE_DIR}/intermediate/ \  
-  --query_lookup  ${QUERY_DIR}/cls_ex_ids.pt \  
-  --depth 1000 \  
-  --save_ranking_to ${SCORE_DIR}/rank.txt
+$ cd ./execute
+$ bash create_doc_stat.sh
+```
 
-# format the retrieval result
-# e.g. msmarco
-python data_helpers/msmarco-passage/score_to_marco.py \  
-  --score_file ${SCORE_DIR}/rank.txt
+### split docs
+Return to here.
+```
+$ cd /path/to/this/repo/retriever
+```
+
+Split corpus.jsonl by the folloinng command.
+```
+$ python split_corpus_data.py \
+  --corpus_file /path/to/corpus.jsonl \
+  --out_dir /path/to/output/split/corpus \
+  --split_num 100
+```
+
+### encode docs to vecs
+Now, we go to `./execute` again.
+
+```
+$ cd ./execute
+```
+
+Encode docs to vecs for indexing. 
+
+- set following params in `execute/encode_doc_all.sh`
+```
+ENCODE_OUT_DIR="/path/to/encode/doc"
+DATA_DIR="/path/to/output/split/corpus"
+CKPT_DIR="/path/to/model/"
+```
+
+Note that DATA_DIR should be the same with out_dir of split_corpus_data.py.
+
+- execute the script
+```
+$ bash enode_doc_all.sh
+```
+
+### encode query to vecs
+Encode queries for execution.
+
+- set following params in `execute/encode_query.sh`
+```
+ENCODE_OUT_DIR="/path/to/encode/doc"
+DATA_DIR="/path/to/data/robust04/queries.jsonl"
+CKPT_DIR="/path/to/model/"
+```
+
+The format of queries.jsonl is the same with BEIR style.
+
+- execute the script
+```
+$ bash enode_query.sh
+```
+
+### reformat query
+Reformat encoded queries for execution.
+
+- set  following params in `execute/format_query.sh`
+```
+ENCODE_OUT_DIR="/path/to/encode/query"
+QUERY_DIR="/path/to/index/query"
+```
+Here, ENCODE_OUT_DIR should be the same with the one in `execute/encode_query.sh`
+
+- execute the script
+```
+$ bash format_query.sh
+```
+
+### build document index shards 
+Indexing the encoded docs
+
+- set following params in `execute/sharding_all.sh`
+```
+ENCODE_OUT_DIR="/path/to/robust04/lss/encode/doc"
+INDEX_DIR="/path/to/robust04/lss/index/doc"
+n_shard=10
+```
+Here, ENCODE_OUT_DIR should be the same with the one in `execute/encode_docs_all.sh`
+You can change n_shard as your server memory.
+
+- execute the script
+```
+$ bash sharding_all.sh
+```
+
+### execute retrieval
+- set following params in `execute/retrieve_cbm25_all.sh`
+```
+QUERY_DIR="/path/to/index/query"
+INDEX_DIR="/path/to/index/doc"
+SCORE_DIR="/path/to/score"
+```
+The QUERY_DIR should be the same with the one in `execute/format_query.sh`
+The INDEX_DIR should be the same with the one in `execute/sharding_all.sh`
+
+- execute the script
+```
+$ bash retrieve_cbm25_all.sh
+```
+
+### merge results and evaluate
+- set following params in `execute/merge_and_eval.sh`
+```
+SCORE_DIR="/path/to/score"
+QUERY_DIR="/path/to/index/query"
+```
+The SCORE_DIR should be the same with the one in `execute/retrieve_cbm25_all.sh`
+The QUERY_DIR should be the same with the one in `execute/format_query.sh`
+
+- execute the script
+```
+$ bash merge_and_eval.sh
+```
+
+
+## Running Dense Retrieval 
+- execute following
+```
+python ./evaluate_sbert.py \
+  --root_dir $root_dir \
+  --dataset trec-robust04-title \
+  --model_path $model_path
+```
+
+`execute/retrieve_sbert.sh` contains the codes.
+Please execute the bash like following
+
+```
+$ cd ./execute
+$ bash retrieve_sbert.sh <model_path>
+```
+
+## Prepareing for measuring speed
+Almost all the content in `eval_retrieval_time.ipynb`. 
+Before exeute it, please prepare following.
+
+1. Make index file of C-BM25
+2. Make index file of Dense Retrieval
+
+The index for C-BM25 is made in `Running Retrieval with C-BM25`.
+
+For indexing the dense retrieval, execute folloing.
+```
+python encode_dense.py \
+   --data_dir /path/to/robust04/ \
+   --model_path /path/to/model \
+   --output_path /path/to/index-output/dense_index.npy
+```
+
+`execute/encode_dense.sh` contains the codes.
+Please execute the bash like following
+
+```
+$ cd ./execute
+$ bash encode_densesh
 ```

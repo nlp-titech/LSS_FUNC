@@ -1,6 +1,5 @@
 import os
 import logging
-from dataclasses import dataclass, field
 from typing import Dict, List, Union, Tuple, Iterable, Optional
 
 import torch
@@ -11,51 +10,12 @@ from transformers import AutoModel, AutoTokenizer
 from transformers.modeling_outputs import BaseModelOutputWithPooling
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
+from lss_func.arguments import ModelArguments
+
 
 logger = logging.getLogger(__name__)
 TOKEN_POOLER = "token"
 LOCAL_AVE_POOLER = "ave"
-
-
-@dataclass
-class ModelArguments:
-    """
-    Arguments pertaining to which model/config/tokenizer we are going to fine-tune from.
-    """
-
-    model_name_or_path: str = field(
-        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
-    )
-    model_type: str = field(default="coil", metadata={"help": "coil or coil_weight"})
-    config_name: Optional[str] = field(
-        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
-    )
-    tokenizer_name: Optional[str] = field(
-        default=None, metadata={"help": "Pretrained tokenizer name or path if not the same as model_name"}
-    )
-    cache_dir: Optional[str] = field(
-        default=None, metadata={"help": "Where do you want to store the pretrained models downloaded from s3"}
-    )
-    token_dim: int = field(default=768)
-    cls_dim: int = field(default=768)
-    token_rep_relu: bool = field(
-        default=False,
-    )
-    token_norm_after: bool = field(default=False)
-    cls_norm_after: bool = field(default=False)
-    x_device_negatives: bool = field(default=False)
-    pooling: str = field(default="max")
-    no_sep: bool = field(
-        default=False,
-    )
-    no_cls: bool = field(
-        default=False,
-    )
-    cls_only: bool = field(
-        default=False,
-    )
-    max_length: int = field(default=512)
-    encode_raw: bool = field(default=True)
 
 
 class Coil:
@@ -171,6 +131,10 @@ class COIL_Core(nn.Module):
         if self.model_args.token_rep_relu:
             reps = torch.relu(reps)
 
+        return cls_rep, reps
+
+    def encode_proc(self, **features):
+        cls_rep, reps = self.encode(**features)
         reps = self._preproc_rep(reps, features)
         return cls_rep, reps
 
@@ -196,6 +160,7 @@ class COIL_Core(nn.Module):
         else:
             raise ValueError(f"{self.pooler} doesn't exist")
 
+        
         reps /= torch.norm(reps, dim=2).unsqueeze(-1)
         reps[torch.isnan(reps)] = 0.0
         return reps

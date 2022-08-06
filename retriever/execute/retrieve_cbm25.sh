@@ -13,7 +13,7 @@ python ../retriever-fast-bm25.py \
       --query $QUERY_DIR \
       --doc_shard $INDEX_DIR/shard_${i} \
       --top 1000 \
-      --save_to ${SCORE_DIR}/intermediate_bm25/shard_${i}.pt \
+      --save_to ${SCORE_DIR}/intermediate/shard_${i}.pt \
       --corpus_dir $CORPUS_DIR \
       --tokenizer_path $TOKENIZER_PATH \
       --stats_dir $STATS_DIR \

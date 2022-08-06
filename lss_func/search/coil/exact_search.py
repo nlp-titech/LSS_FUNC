@@ -160,7 +160,7 @@ class LSSSearcher:
                     if self.encode_raw:
                         _, doc_toks_rep = self.model.encode_corpus_raw(input_doc)
                     else:
-                        _, doc_toks_rep = self.model.epncode_corpus(input_doc)
+                        _, doc_toks_rep = self.model.encode_corpus(input_doc)
 
                 docs_toks_rep.append(doc_toks_rep.cpu().numpy())
 

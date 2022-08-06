@@ -5,7 +5,7 @@ from setuptools import setup
 
 # Package meta-data.
 NAME = "LSS_FUNC"
-DESCRIPTION = "dense retrieval and learning to rank."
+DESCRIPTION = "Codes for TOD95."
 URL = "https://github.com/meshidenn/"
 EMAIL = "hiroki.iida@nlp.c.titech.ac.jp"
 AUTHOR = "Hiroki Iida"
@@ -43,7 +43,7 @@ setup(
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=["lss_func"],
+    packages=["lss_func", "lss_func.search", "lss_func.search.coil", "lss_func.search.colbert", "lss_func.models"],
     author=AUTHOR,
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,

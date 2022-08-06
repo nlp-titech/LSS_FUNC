@@ -36,7 +36,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus_file")
     parser.add_argument("--out_dir")
-    parser.add_argument("--split_num", default=10, type=int)
+    parser.add_argument("--split_num", default=100, type=int)
 
     args = parser.parse_args()
     main(args)

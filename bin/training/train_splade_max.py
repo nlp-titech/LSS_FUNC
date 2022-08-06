@@ -1,4 +1,5 @@
-# FROM Sentence-BERT(https://github.com/UKPLab/sentence-transformers/blob/master/examples/training/ms_marco/train_bi-encoder_mnrl.py) with minimal changes.
+# This scrpit is from https://github.com/naver/splade/tree/main/training_with_sentence_transformers
+# The original script is from Sentence-BERT(https://github.com/UKPLab/sentence-transformers/blob/master/examples/training/ms_marco/train_bi-encoder_mnrl.py) with minimal changes.
 # Original License Apache2, NOTE: Trained MSMARCO models are NonCommercial (from dataset License)
 
 import random
