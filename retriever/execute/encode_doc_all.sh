@@ -1,8 +1,11 @@
 #!/bin/bash
 
-ENCODE_OUT_DIR="/path/to/encode/doc"
+ENCODE_OUT_DIR="/path/to/encode/docs"
 DATA_DIR="/path/to/data/"
 CKPT_DIR="/path/to/model/"
+
+mkdir -p $ENCODE_OUT_DIR
+
 
 mkdir -p ${ENCODE_OUT_DIR}
 for i in $(seq -f "%02g" 0 99)  

@@ -10,10 +10,9 @@ python ../encode_text.py \
   --output_dir $ENCODE_OUT_DIR \
   --model_name_or_path $CKPT_DIR \
   --cls_dim 768 \
-  --token_dim 32 \
   --p_max_len 512 \
   --pooler_mode ave \
-  --window_size 5 \
+  --window_size 3 \
   --fp16 \
   --per_device_eval_batch_size 128 \
   --dataloader_num_workers 12 \

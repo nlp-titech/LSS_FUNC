@@ -1,6 +1,6 @@
 #!/bin/bash
 
-root_dir="/path/to/root_dir/of/dataset"
+root_dir="/path/to/BEIR/datasets/"
 model_path=$1
 
 python ../evaluate_sbert.py \
