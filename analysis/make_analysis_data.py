@@ -22,25 +22,13 @@ from lss_func.search.coil.exact_search import LSSSearcher
 from lss_func.models.sentence_bert import SentenceBERT, SentenceBERTOUTER
 from lss_func.models.bm25_weight import BM25Weight
 from lss_func.models import coil
-from lss_func.arguments import ModelArguments, DataArguments
+from lss_func.arguments import ModelArguments, DataArguments, LSSArguments
 from dataclasses import dataclass, field
 
 #### Just some code to print debug information to stdout
 logging.basicConfig(
     format="%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.INFO, handlers=[LoggingHandler()]
 )
-
-
-# @dataclass
-# class DataArgument:
-#     dataset: str = field(metadata={"help": "set beir dataset name"})
-#     index: str = field(metadata={"help": "set anserini index"})
-#     resultpath: str = field(metadata={"help": "result path"})
-#     root_dir: str = field(metadata={"help": "set root dir of beir"})
-#     initialize: bool = field(default=True, metadata={"help": "initialize elastic search index"})
-#     doc_max_length: int = field(default=None, metadata={"help": "doc_max_length"})
-#     window_size: int = field(default=5, metadata={"help": "doc_max_length"})
-#     norm: bool = field(default=True, metadata={"help": "normalize vec when scoreing"})
 
 
 def calc_idf_and_doclen(corpus, tokenizer, sep):
@@ -76,13 +64,11 @@ def save_result(result_path, result):
 
 
 #### /print debug information to stdout
-parser = HfArgumentParser((ModelArguments, DataArguments))
-(model_args, data_args) = parser.parse_args_into_dataclasses()
+parser = HfArgumentParser((ModelArguments, DataArguments, LSSArguments))
+(model_args, data_args, lss_args) = parser.parse_args_into_dataclasses()
 
 k1 = 0.9
-# k1 = 0.82
 b = 0.4
-# b = 0.68
 top_k = 100
 k_values = [1, 3, 5, 10, 100]
 
@@ -143,7 +129,7 @@ save_result(weighted_dense_result_path, weighted_dense_rerank_results)
 
 
 #### Reranking top-100 docs using Dense Retriever model
-score_functions = ["maxsim_bm25"]
+score_functions = ["maxsim_bm25_qtf"]
 pooler = "ave"
 cbm25_core = coil.Coil(model_args.model_name_or_path, model_args)
 cbm25_core.eval()
@@ -156,10 +142,10 @@ cbm25_model = LSSSearcher(
     batch_size=128,
     idf=idf,
     doc_len_ave=doc_len_ave,
-    doc_max_length=data_args.doc_max_length,
-    # window_size=data_args.window_size,
+    doc_max_length=lss_args.doc_max_length,
+    window_size=model_args.window_size,
     encode_raw=model_args.encode_raw,
-    norm=data_args.norm,
+    norm=lss_args.norm,
 )
 cbm25_retriever = EvaluateRetrieval(cbm25_model, score_function="cos_sim", k_values=[1, 3, 5, 10, 100])
 #### Retrieve dense results (format of results is identical to qrels)
