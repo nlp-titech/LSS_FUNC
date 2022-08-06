@@ -23,12 +23,8 @@ parser.add_argument("--model_path")
 
 args = parser.parse_args()
 
-# dataset = "msmarco"
 
 #### Download nfcorpus.zip dataset and unzip the dataset
-# url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-# out_dir = os.path.join(pathlib.Path(__file__).parent.absolute(), "datasets")
-# data_path = util.download_and_unzip(url, out_dir)
 data_path = f"{args.root_dir}/{args.dataset}"
 
 #### Provide the data path where nfcorpus has been downloaded and unzipped to the data loader

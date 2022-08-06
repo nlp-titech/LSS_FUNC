@@ -25,9 +25,11 @@ from tqdm import tqdm
 import numpy as np
 import torch
 
-from lss_func.arguments import ModelArguments, DataArguments, COILTrainingArguments as TrainingArguments
+from lss_func.arguments import ModelArguments
+from lss_func.arguments import RetrievalDataArguments as DataArguments
+from lss_func.arguments import RetrievalTrainingArguments as TrainingArguments
 from lss_func.beir_datasets import BeirDocDataset, BeirQueryDataset
-from lss_func.coil import Coil
+from lss_func.models.coil import Coil
 from transformers import DataCollatorWithPadding
 from transformers import (
     HfArgumentParser,
@@ -122,7 +124,7 @@ def main():
         pid = entry["_id"]
         passage = " ".join([entry[field] for field in target_text_fields if field in entry])
         all_pids.append(pid)
-        t_passage = model.q_tokenizer(passage, max_length=data_args.p_max_len)["input_ids"][1:-1]
+        t_passage = model.tokenizer(passage, max_length=data_args.p_max_len)["input_ids"][1:-1]
         rep_dict = defaultdict(list)
         for sent_pos, tok_id in enumerate(t_passage):
             if tok_id in model.remove_tok:
