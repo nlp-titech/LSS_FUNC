@@ -1,5 +1,5 @@
 # Retriever
-This Retriever is based on [COIL]([COIL repository](https://github.com/luyug/COIL/tree/main/retriever)).
+This Retriever is based on [COIL](https://github.com/luyug/COIL/tree/main/retriever).
 
 ## Fast Retriver(This section is the same with [COIL](https://github.com/luyug/COIL/tree/main/retriever))
 It has come to my attention that `pytorch_scatter` does not scale well to multiple cores. I finally decided to write a C binding. While a pure C/C++ implementatoin 
