@@ -13,6 +13,9 @@ class ModelArguments:
     model_name_or_path: str = field(
         metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
     )
+    dense_model_name_or_path: Optional[str] = field(default=None,
+        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
+    )
     config_name: Optional[str] = field(
         default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
     )
@@ -49,6 +52,7 @@ class DataArguments:
     index: str = field(metadata={"help": "set anserini index"})
     resultpath: str = field(metadata={"help": "result path"})
     root_dir: str = field(metadata={"help": "set root dir of beir"})
+    analysis_out_path: str = field(default=None, metadata={"help":"output all retrieve result"})
 
 
 @dataclass
@@ -58,6 +62,7 @@ class LSSArguments:
     funcs: str = field(default="maxsim_bm25_qtf", metadata={"help": "set scorefunc with csv. maxsim,maxsim_idf,"\
     "maxsim_bm25,maxsim_qtf,maxsim_idf_qtf,maxsim_bm25_qtf"})
     norm: bool = field(default=True, metadata={"help": "normalize vec when scoreing"})
+    dense_sim_func: str = field(default="cos_sim", metadata={"help": "cos_sim or dot"})
     # pooler: str = field(default="local_ave", metadata={"help": "set scorefunc with csv. token,local_ave"})
 
 
@@ -103,7 +108,7 @@ class RetrievalDataArguments:
     initialize: bool = field(default=True, metadata={"help": "initialize elastic search index"})
     doc_max_length: int = field(default=None, metadata={"help": "doc_max_length"})
     # window_size: int = field(default=5, metadata={"help": "doc_max_length"})
-    norm: bool = field(default=True, metadata={"help": "normalize vec when scoreing"})
+    dense_sim_func: str = field(default="cos_sim", metadata={"help": "cos_sim or dot"})
 
     def __post_init__(self):
         if self.train_dir is not None:

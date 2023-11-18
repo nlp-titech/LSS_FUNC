@@ -2,6 +2,8 @@ import argparse
 import json
 from pathlib import Path
 from logging import getLogger, StreamHandler, DEBUG
+from tqdm import tqdm
+
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -42,7 +44,7 @@ class CorpusConverter(Converter):
     def _convert(self, in_file, out_file):
         with in_file.open(mode="r") as f:
             with out_file.open(mode="w") as g:
-                for line in f:
+                for line in tqdm(f):
                     outline = dict()
                     jline = json.loads(line)
                     outline["id"] = jline["_id"]
@@ -62,7 +64,7 @@ class QueryConverter(Converter):
     def _convert(self, in_file, out_file):
         with in_file.open(mode="r") as f:
             with out_file.open(mode="w") as g:
-                for line in f:
+                for line in tqdm(f):
                     jline = json.loads(line)
                     outline_id = jline["_id"]
                     query = " ".join(jline["text"].strip().split("\t"))
@@ -81,7 +83,7 @@ class QrelConverter(Converter):
     def _convert(self, in_file, out_file):
         with in_file.open(mode="r") as f:
             with out_file.open(mode="w") as g:
-                for i, line in enumerate(f):
+                for i, line in tqdm(enumerate(f)):
                     if i == 0:
                         continue
                     sline = line.strip().split("\t")
@@ -95,9 +97,9 @@ class QrelConverter(Converter):
 
 def main(args):
     in_dir = Path(args.in_dir)
-    corpus_files = in_dir.glob("*/corpus.jsonl")
-    query_files = in_dir.glob("*/queries.jsonl")
-    qrel_files = in_dir.glob("*/qrels/*.tsv")
+    corpus_files = in_dir.glob("**/corpus.jsonl")
+    query_files = in_dir.glob("**/queries.jsonl")
+    qrel_files = in_dir.glob("**/qrels/*.tsv")
     out_root_dir = Path(args.out_dir)
 
     corpus_converter = CorpusConverter(args.sep_title)
